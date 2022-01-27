@@ -1,0 +1,121 @@
+---
+title: "HW 4 - ggplot"
+author: John Ahn
+output: html_document
+---
+
+### 0. SETUP 
+
+```{r}
+library(tidyverse)
+newgss <- read_csv("newgss.csv")
+```
+
+```{r}
+newgss
+```
+
+### 1. GSS
+
+#### (1-a) [1 point] Using newgss, create a barplot of degree by sex.
+
+```{r}
+ggplot(newgss, aes(degree)) + 
+  geom_bar(aes(fill = sex))
+```
+
+#### (1-b) [2 points] Create another barplot of degree by sex, dividing the graph into region. 
+
+```{r}
+ggplot(newgss, aes(degree)) + 
+  geom_bar(aes(fill = sex)) +
+  facet_wrap(~region)
+```
+
+#### (1-c) [2 point] Compute the average of income1 for each combination of year and sex.
+
+```{r}
+newgss_new <- newgss %>% 
+  group_by(year, sex) %>% 
+  summarize(avg_inc = mean(income1, na.rm = TRUE))
+```
+```{r}
+newgss_new
+```
+
+#### (1-d) [1 point] Based on the averages you computed in “1.c”, create a line graph showing the evolution of average income through time by sex (set the color of each line to the variable sex).
+
+```{r}
+ggplot(newgss_new, aes(year, avg_inc)) + 
+  geom_line(aes(color = sex))
+```
+
+
+### 2. Txhousing
+
+#### (2-a) [1 point] Filter the txhousing data frame (included in the tidyverse package) to keep only: The year 2014, and  Cities “Austin”, “Collin County”, “Dallas”, “Denton County”, “Fort Bend”, “Fort Worth”, “Houston”,“Montgomery County”, and “San Antonio”.
+
+```{r}
+txhousing_filter <- filter(txhousing, 
+                           year == 2014, 
+                           city %in% c("Austin", "Collin County", "Dallas", "Denton County", "Fort Bend", "Fort Worth", "Houston", "Montgomery County", "San Antonio"))
+txhousing_filter
+```
+
+#### (2-b) [3 points] Based on the data frame you created in “2.a”, create a graph showing the evolution of median through the 12 months of the year.
+
+```{r}
+ggplot(txhousing_filter, aes(month, median)) + 
+  geom_point(aes(color = city), size = 0.5) +
+  geom_line(aes(color = city), alpha = 0.5)
+```
+
+
+### 3. Challenge question (Extra Credit)
+
+#### (3-a) [4 points] Based on newgss, produce a data frame called married_happy by:
+
+##### (3-a. 1) Dropping all observations for which happy is either “DK” or NA, and all observations for which marital is NA.
+
+```{r}
+married_happy <- filter(newgss, 
+                        !happy %in% c("DK", NA), 
+                        !marital %in% c(NA))
+
+```
+```{r}
+married_happy
+```
+
+
+##### (3-a. 2) Based the data frame resulting from 1., compute within each remaining marital category the proportion of surveyed people who are that are “NOT TOO HAPPY”, “PRETTY HAPPY”, and “VERY HAPPY”.
+
+```{r}
+married_happy <- married_happy %>%
+  group_by(marital, happy) %>%
+  summarize(n = n()) %>%
+  mutate(prop = n/sum(n)) %>%
+  select(marital, happy, prop)
+```
+```{r}
+married_happy
+```
+
+
+#### (3. b) [3 points] Provide a bar plot of married_happy with: 
+##### - marital on the x-axis, prop on the y-axis, and bars of different colors for each happiness category in happy.
+##### - Change: the title of the y-axis to “Proportion”, the title of the x-axis to “Marital Status”, the title of the legend to “Happiness”, and reduce the font-size of the tick labels on the x-axis (“DIVORCED”, “MARRIED”, etc) to prevent them from overlapping with one another (for example, a font size of 8 would do in this case).
+
+
+```{r}
+ggplot(married_happy, aes(marital, prop)) + 
+  geom_bar(aes(fill = happy), position = "dodge", stat = "identity") +
+  labs(x = "Marital Status", y = "Proportion") +
+  guides(fill = guide_legend(title = "Happiness Level")) +
+  theme(axis.text.x = element_text(size = 8))
+```
+
+
+
+
+

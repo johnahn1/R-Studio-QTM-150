@@ -1,0 +1,10 @@
+---
+title: "QTM150 HW0"
+output: html_document
+---
+
+John = 10 Ahn = 1
+```{r}
+10+1
+```
+

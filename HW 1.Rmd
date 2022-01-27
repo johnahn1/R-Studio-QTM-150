@@ -1,0 +1,19 @@
+---
+title: "HW1: My first knitted Rmarkdown"
+output: html_document
+---
+#### John Ahn
+
+**This text is bold.**
+
+This is the R code to multiply my two numbers as well as R's answer.
+```{r}
+14*14
+```
+
+This is the sum of my two numbers (I am hiding the R code I used).
+```{r, echo = F}
+14+14
+
+```
+

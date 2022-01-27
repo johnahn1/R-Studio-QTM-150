@@ -1,0 +1,92 @@
+---
+title: 'HW2: qplot and data import'
+author: John Ahn
+output: html_document
+---
+### SETUP
+```{r}
+library(tidyverse)
+
+#Show the dataset
+midwest
+```
+
+### 1. Population density and poverty in the Midwest
+
+
+#### (1-a)
+
+
+```{r}
+# Draw the scatter plot between population density and percent below poverty
+qplot(popdensity, 
+      percbelowpoverty, 
+      data = midwest,
+      main = "Relationship between Population Density and Percent below Poverty")
+```
+
+#### (1-b)
+
+
+```{r}
+
+# Draw the scatter plot broken down by inmetro 
+qplot(popdensity, 
+      percbelowpoverty, 
+      data = midwest, 
+      facets = ~inmetro)
+
+```
+
+### 2. Historical trends for obesity and diabetes in the US
+
+
+#### (2-a)
+
+
+```{r}
+
+#Import Dataset 
+obes_diab_trend <- read.csv("obes_diab_trend.csv", header = T )
+
+#Show the dataset
+obes_diab_trend
+```
+
+
+#### (2-b)
+
+
+```{r}
+# Draw the graph
+qplot(year, 
+      prevalence, 
+      data = obes_diab_trend,
+      main = 'Historical trend of the prevalence of diabetes and obesity',
+      geom = 'line',
+      color = condition)
+```
+
+### 3. Challenge question (extra credit)
+
+
+#### (3-a)
+
+
+```{r}
+library(dplyr)
+
+#select a subset 
+midwest_filt = filter(midwest, popdensity < 10000)
+midwest_filt
+```
+
+```{r}
+#Draw the scatter plot between population density and percent below poverty 
+qplot(x = popdensity,
+      y = percbelowpoverty,
+     data = midwest_filt,
+      xlab = "Population Density",
+      ylab = "Percent below Poverty")
+```
+
